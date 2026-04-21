@@ -26,7 +26,7 @@
                   imageMso="FormatPainter"
                   onAction="btnApply_Click" />
           <button id="btnApplyToSlides" label="Apply to Slides" size="large"
-                  imageMso="SlideMasterView"
+                  imageMso="GroupSmartArtQuickStyles"
                   onAction="btnApplyToSlides_Click" />
           <checkBox id="chkCrop"     label="Crop"
                     getPressed="chkCrop_GetPressed"
@@ -42,7 +42,7 @@
 
           <!-- Bulk Insert (stub) -->
           <button id="btnBulkInsert" label="Bulk Insert" size="large"
-                  imageMso="InsertPictureFromFile"
+                  imageMso="OmsSlideInsert"
                   onAction="btnBulkInsert_Click" />
           <checkBox id="chkApplyPreset" label="Apply Preset" enabled="false"
                     getPressed="chkApplyPreset_GetPressed"
