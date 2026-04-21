@@ -248,16 +248,8 @@ namespace PicWrangler.Ribbon
 
         public void btnHelp_Click(IRibbonControl control)
         {
-            string helpText =
-                "PicWrangler — Batch Manipulate Pictures\n\n" +
-                "1. Select an image and click \"Set Preset\" to capture its crop, size, and position.\n" +
-                "2. Check Crop / Size / Position to choose what gets applied.\n" +
-                "3. Click \"Apply\" to apply the preset to the selected image.\n" +
-                "4. Select slides in the slide panel and click \"Apply to Slides\" to batch-apply.\n\n" +
-                "Up to 4 presets can be stored simultaneously.";
-
-            MessageBox.Show(helpText, "PicWrangler Help",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            using (var dialog = new HelpDialog())
+                dialog.ShowDialog();
         }
 
         // -----------------------------------------------------------------
