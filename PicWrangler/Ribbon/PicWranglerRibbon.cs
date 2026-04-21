@@ -184,13 +184,17 @@ namespace PicWrangler.Ribbon
                 float slideWidth  = presentation.PageSetup.SlideWidth;
                 float slideHeight = presentation.PageSetup.SlideHeight;
 
+                int insertAfter;
+                try   { insertAfter = app.ActiveWindow.View.Slide.SlideIndex; }
+                catch { insertAfter = presentation.Slides.Count; }
+
                 foreach (string filePath in dialog.FileNames)
                 {
                     var layout = _addTitle
                         ? PPT.PpSlideLayout.ppLayoutTitleOnly
                         : PPT.PpSlideLayout.ppLayoutBlank;
 
-                    var slide = presentation.Slides.Add(presentation.Slides.Count + 1, layout);
+                    var slide = presentation.Slides.Add(++insertAfter, layout);
 
                     float imgAreaTop    = 0f;
                     float imgAreaHeight = slideHeight;
