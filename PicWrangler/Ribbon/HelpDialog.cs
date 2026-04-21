@@ -8,11 +8,12 @@ namespace PicWrangler.Ribbon
         public HelpDialog()
         {
             Text            = "PicWrangler Help";
-            Size            = new Size(800, 850);
+            Size            = new Size(900, 800);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox     = false;
             MinimizeBox     = false;
             StartPosition   = FormStartPosition.CenterScreen;
+            Padding         = new Padding(16);
 
             var rtb = new RichTextBox
             {
