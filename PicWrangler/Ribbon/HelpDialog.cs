@@ -44,7 +44,7 @@ namespace PicWrangler.Ribbon
             {
                 Text         = "OK",
                 DialogResult = DialogResult.OK,
-                Size         = new Size(75, 26),
+                Size         = new Size(150, 35),
                 Anchor       = AnchorStyles.Bottom | AnchorStyles.Right,
             };
 
