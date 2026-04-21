@@ -1,0 +1,228 @@
+using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Microsoft.Office.Core;
+using PicWrangler.Helpers;
+using PicWrangler.Models;
+using PicWrangler.Services;
+using PPT = Microsoft.Office.Interop.PowerPoint;
+
+namespace PicWrangler.Ribbon
+{
+    [ComVisible(true)]
+    public class PicWranglerRibbon : IRibbonExtensibility
+    {
+        private IRibbonUI _ribbon;
+
+        private readonly PresetStore _presetStore = new PresetStore();
+        private readonly ImageInspector _inspector = new ImageInspector();
+        private readonly ImageApplicator _applicator = new ImageApplicator();
+
+        private readonly string[] _presetNames = { "Preset 1", "Preset 2", "Preset 3", "Preset 4" };
+        private int _selectedPresetIndex = 0;
+
+        private bool _applyCrop     = true;
+        private bool _applySize     = true;
+        private bool _applyPosition = true;
+
+        // -----------------------------------------------------------------
+        // IRibbonExtensibility
+        // -----------------------------------------------------------------
+
+        public string GetCustomUI(string ribbonID)
+        {
+            return GetResourceText("PicWrangler.Ribbon.PicWranglerRibbon.xml");
+        }
+
+        public void Ribbon_Load(IRibbonUI ribbonUI)
+        {
+            _ribbon = ribbonUI;
+        }
+
+        // -----------------------------------------------------------------
+        // Preset dropdown
+        // -----------------------------------------------------------------
+
+        public int ddPreset_GetItemCount(IRibbonControl control) => _presetNames.Length;
+
+        public string ddPreset_GetItemLabel(IRibbonControl control, int index) => _presetNames[index];
+
+        public string ddPreset_GetItemID(IRibbonControl control, int index) => $"preset_{index}";
+
+        public int ddPreset_GetSelectedItemIndex(IRibbonControl control) => _selectedPresetIndex;
+
+        public void ddPreset_SelectionChanged(IRibbonControl control, string selectedId, int selectedIndex)
+        {
+            _selectedPresetIndex = selectedIndex;
+        }
+
+        // -----------------------------------------------------------------
+        // Checkbox getters / setters
+        // -----------------------------------------------------------------
+
+        public bool chkCrop_GetPressed(IRibbonControl control)         => _applyCrop;
+        public bool chkSize_GetPressed(IRibbonControl control)         => _applySize;
+        public bool chkPosition_GetPressed(IRibbonControl control)     => _applyPosition;
+        public bool chkApplyPreset_GetPressed(IRibbonControl control)  => false;
+        public bool chkAddTitle_GetPressed(IRibbonControl control)     => false;
+        public bool chkAddNotes_GetPressed(IRibbonControl control)     => false;
+
+        public void chkCrop_Toggle(IRibbonControl control, bool pressed)     => _applyCrop     = pressed;
+        public void chkSize_Toggle(IRibbonControl control, bool pressed)     => _applySize     = pressed;
+        public void chkPosition_Toggle(IRibbonControl control, bool pressed) => _applyPosition = pressed;
+        public void chkApplyPreset_Toggle(IRibbonControl control, bool pressed) { }
+        public void chkAddTitle_Toggle(IRibbonControl control, bool pressed)    { }
+        public void chkAddNotes_Toggle(IRibbonControl control, bool pressed)    { }
+
+        // -----------------------------------------------------------------
+        // Set Preset
+        // -----------------------------------------------------------------
+
+        public void btnSetPreset_Click(IRibbonControl control)
+        {
+            var app   = Globals.ThisAddIn.Application;
+            var shape = SelectionHelper.GetSelectedPicture(app);
+            if (shape == null) return;
+
+            string presetName = _presetNames[_selectedPresetIndex];
+            var preset = _inspector.CapturePreset(shape, presetName);
+            _presetStore.Save(presetName, preset);
+
+            MessageBox.Show($"Saved settings to \"{presetName}\".", "PicWrangler",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // -----------------------------------------------------------------
+        // Apply
+        // -----------------------------------------------------------------
+
+        public void btnApply_Click(IRibbonControl control)
+        {
+            if (!AnyOptionChecked()) return;
+
+            var app   = Globals.ThisAddIn.Application;
+            var shape = SelectionHelper.GetSelectedPicture(app);
+            if (shape == null) return;
+
+            string presetName = _presetNames[_selectedPresetIndex];
+            var preset = _presetStore.Load(presetName);
+
+            if (preset == null)
+            {
+                MessageBox.Show($"\"{presetName}\" has not been configured yet.", "PicWrangler",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            _applicator.Apply(shape, preset, _applyCrop, _applySize, _applyPosition);
+        }
+
+        // -----------------------------------------------------------------
+        // Apply to Slides
+        // -----------------------------------------------------------------
+
+        public void btnApplyToSlides_Click(IRibbonControl control)
+        {
+            if (!AnyOptionChecked()) return;
+
+            var app = Globals.ThisAddIn.Application;
+
+            string presetName = _presetNames[_selectedPresetIndex];
+            var preset = _presetStore.Load(presetName);
+
+            if (preset == null)
+            {
+                MessageBox.Show($"\"{presetName}\" has not been configured yet.", "PicWrangler",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            PPT.SlideRange slideRange = GetSelectedSlides(app);
+            if (slideRange == null) return;
+
+            int imageCount = 0;
+            int slideCount = slideRange.Count;
+
+            foreach (PPT.Slide slide in slideRange)
+            {
+                foreach (PPT.Shape shape in slide.Shapes)
+                {
+                    if (shape.Type != MsoShapeType.msoPicture) continue;
+                    _applicator.Apply(shape, preset, _applyCrop, _applySize, _applyPosition);
+                    imageCount++;
+                }
+            }
+
+            MessageBox.Show(
+                $"Applied \"{presetName}\" to {imageCount} image{(imageCount != 1 ? "s" : "")} across {slideCount} slide{(slideCount != 1 ? "s" : "")}.",
+                "PicWrangler", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // -----------------------------------------------------------------
+        // Bulk Insert (stub)
+        // -----------------------------------------------------------------
+
+        public void btnBulkInsert_Click(IRibbonControl control)
+        {
+            MessageBox.Show("Bulk Insert coming soon.", "PicWrangler",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // -----------------------------------------------------------------
+        // Help
+        // -----------------------------------------------------------------
+
+        public void btnHelp_Click(IRibbonControl control)
+        {
+            string helpText =
+                "PicWrangler — Batch Manipulate Pictures\n\n" +
+                "1. Select an image and click \"Set Preset\" to capture its crop, size, and position.\n" +
+                "2. Check Crop / Size / Position to choose what gets applied.\n" +
+                "3. Click \"Apply\" to apply the preset to the selected image.\n" +
+                "4. Select slides in the slide panel and click \"Apply to Slides\" to batch-apply.\n\n" +
+                "Up to 4 presets can be stored simultaneously.";
+
+            MessageBox.Show(helpText, "PicWrangler Help",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // -----------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------
+
+        private bool AnyOptionChecked()
+        {
+            if (!_applyCrop && !_applySize && !_applyPosition)
+            {
+                MessageBox.Show("Please check at least one of Crop, Size, or Position.", "PicWrangler",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            return true;
+        }
+
+        private PPT.SlideRange GetSelectedSlides(PPT.Application app)
+        {
+            var selection = app.ActiveWindow.Selection;
+
+            if (selection.Type == PPT.PpSelectionType.ppSelectionSlides)
+                return selection.SlideRange;
+
+            MessageBox.Show(
+                "No slides selected in the slide panel. Applying to the active slide only.",
+                "PicWrangler", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            int activeIndex = app.ActiveWindow.View.Slide.SlideIndex;
+            return app.ActivePresentation.Slides.Range(activeIndex);
+        }
+
+        private static string GetResourceText(string resourceName)
+        {
+            var asm = Assembly.GetExecutingAssembly();
+            using (var stream = asm.GetManifestResourceStream(resourceName))
+            using (var reader = new System.IO.StreamReader(stream))
+                return reader.ReadToEnd();
+        }
+    }
+}

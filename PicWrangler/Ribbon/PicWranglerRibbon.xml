@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui"
+          onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab idMso="TabAddIns">
+        <group id="grpPicWrangler" label="PicWrangler: Batch Manipulate Pictures">
+
+          <!-- Preset selector -->
+          <dropDown id="ddPreset" label="Preset" showLabel="false"
+                    getItemCount="ddPreset_GetItemCount"
+                    getItemLabel="ddPreset_GetItemLabel"
+                    getItemID="ddPreset_GetItemID"
+                    getSelectedItemIndex="ddPreset_GetSelectedItemIndex"
+                    onAction="ddPreset_SelectionChanged" />
+
+          <!-- Set / Apply -->
+          <button id="btnSetPreset" label="Set Preset"
+                  onAction="btnSetPreset_Click" />
+          <button id="btnApply" label="Apply"
+                  onAction="btnApply_Click" />
+          <button id="btnApplyToSlides" label="Apply to Slides"
+                  onAction="btnApplyToSlides_Click" />
+
+          <separator id="sep1" />
+
+          <!-- Apply-options checkboxes -->
+          <checkBox id="chkCrop"     label="Crop"
+                    getPressed="chkCrop_GetPressed"
+                    onAction="chkCrop_Toggle" />
+          <checkBox id="chkSize"     label="Size"
+                    getPressed="chkSize_GetPressed"
+                    onAction="chkSize_Toggle" />
+          <checkBox id="chkPosition" label="Position"
+                    getPressed="chkPosition_GetPressed"
+                    onAction="chkPosition_Toggle" />
+
+          <separator id="sep2" />
+
+          <!-- Bulk Insert (stub) -->
+          <button id="btnBulkInsert" label="Bulk Insert"
+                  onAction="btnBulkInsert_Click" />
+          <checkBox id="chkApplyPreset" label="Apply Preset" enabled="false"
+                    getPressed="chkApplyPreset_GetPressed"
+                    onAction="chkApplyPreset_Toggle" />
+          <checkBox id="chkAddTitle"    label="Add Title"    enabled="false"
+                    getPressed="chkAddTitle_GetPressed"
+                    onAction="chkAddTitle_Toggle" />
+          <checkBox id="chkAddNotes"    label="Add Notes"    enabled="false"
+                    getPressed="chkAddNotes_GetPressed"
+                    onAction="chkAddNotes_Toggle" />
+
+          <separator id="sep3" />
+
+          <button id="btnHelp" label="Help"
+                  onAction="btnHelp_Click" />
+
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

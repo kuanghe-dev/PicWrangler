@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37203.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicWrangler", "PicWrangler\PicWrangler.csproj", "{9BFA5A4E-581B-472F-87E2-D3DEB3AC58F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicWranglerTests", "PicWranglerTests\PicWranglerTests.csproj", "{8208E039-A59C-4532-A092-0F021234966A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9BFA5A4E-581B-472F-87E2-D3DEB3AC58F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BFA5A4E-581B-472F-87E2-D3DEB3AC58F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BFA5A4E-581B-472F-87E2-D3DEB3AC58F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BFA5A4E-581B-472F-87E2-D3DEB3AC58F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8208E039-A59C-4532-A092-0F021234966A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8208E039-A59C-4532-A092-0F021234966A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8208E039-A59C-4532-A092-0F021234966A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8208E039-A59C-4532-A092-0F021234966A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF29161F-EFDB-4141-8BB9-8D0EEFB93D0E}
+	EndGlobalSection
+EndGlobal
