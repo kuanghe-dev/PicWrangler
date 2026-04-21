@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace PicWrangler.Ribbon
@@ -25,7 +26,9 @@ namespace PicWrangler.Ribbon
                 Margin      = new Padding(8),
             };
 
-            AppendBold(rtb, "PicWrangler — Batch Manipulate Pictures\n\n");
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            AppendBold(rtb, "PicWrangler — Batch Manipulate Pictures\n");
+            rtb.AppendText($"Version {version.Major}.{version.Minor}.{version.Build}\n\n");
             AppendBold(rtb, "PRESETS\n");
             rtb.AppendText(
                 "1. Select an image and click \"Set Preset\" to capture its crop, size, and position.\n" +
