@@ -19,20 +19,7 @@ namespace PicWrangler.Helpers
 
             PPT.Shape shape = selection.ShapeRange[1];
 
-            if (shape.Type != MsoShapeType.msoPicture &&
-                shape.Type != MsoShapeType.msoLinkedPicture &&
-                shape.Type != MsoShapeType.msoPlaceholder)
-            {
-                MessageBox.Show("Selected object is not a picture.", "PicWrangler",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return null;
-            }
-
-            try
-            {
-                _ = shape.PictureFormat.CropLeft;
-            }
-            catch
+            if (!IsPictureShape(shape))
             {
                 MessageBox.Show("Selected object is not a picture.", "PicWrangler",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -40,6 +27,17 @@ namespace PicWrangler.Helpers
             }
 
             return shape;
+        }
+
+        public static bool IsPictureShape(PPT.Shape shape)
+        {
+            if (shape.Type != MsoShapeType.msoPicture &&
+                shape.Type != MsoShapeType.msoLinkedPicture &&
+                shape.Type != MsoShapeType.msoPlaceholder)
+                return false;
+
+            try { _ = shape.PictureFormat.CropLeft; return true; }
+            catch { return false; }
         }
 
         public static PPT.SlideRange GetSelectedSlides(PPT.Application app)
