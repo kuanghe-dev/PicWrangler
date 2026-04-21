@@ -14,8 +14,8 @@
                     getSelectedItemIndex="ddPreset_GetSelectedItemIndex"
                     onAction="ddPreset_SelectionChanged" />
 
-          <!-- Set Preset: large button immediately right of dropdown -->
-          <button id="btnSetPreset" label="Set Preset" size="large"
+          <!-- Save Preset: large button immediately right of dropdown -->
+          <button id="btnSetPreset" label="Save Preset" size="large"
                   imageMso="FileSave"
                   onAction="btnSetPreset_Click" />
 

@@ -78,7 +78,7 @@ namespace PicWrangler.Ribbon
         public void chkAddNotes_Toggle(IRibbonControl control, bool pressed) => _addNotes = pressed;
 
         // -----------------------------------------------------------------
-        // Set Preset
+        // Save Preset
         // -----------------------------------------------------------------
 
         public void btnSetPreset_Click(IRibbonControl control)

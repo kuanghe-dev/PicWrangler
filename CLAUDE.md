@@ -105,7 +105,7 @@ The ribbon tab is named **ADD-INS** and contains one group. All action buttons u
 | Control | Type | ID | Label | Default | Notes |
 |---|---|---|---|---|---|
 | Preset selector | `dropDown` | `ddPreset` | *(none)* | "Preset 1" | Items: "Preset 1"–"Preset 4" |
-| Set Preset | `button` | `btnSetPreset` | "Set Preset" | — | Large; saves selected image's settings into chosen preset |
+| Save Preset | `button` | `btnSetPreset` | "Save Preset" | — | Large; saves selected image's settings into chosen preset |
 | *(separator)* | | `sep1` | | | |
 | Apply | `button` | `btnApply` | "Apply" | — | Large; applies preset to selected image |
 | Apply to Slides | `button` | `btnApplyToSlides` | "Apply to Slides" | — | Large; applies preset to all images on selected slides |
@@ -123,7 +123,7 @@ The ribbon tab is named **ADD-INS** and contains one group. All action buttons u
 
 ## Feature Implementation Guide
 
-### 1. Set Preset (`btnSetPreset_Click`)
+### 1. Save Preset (`btnSetPreset_Click`)
 
 **Goal:** Read crop, size, and position from the currently selected image and save into the active preset slot.
 
@@ -304,18 +304,18 @@ start PicWrangler.sln
 
 ## Testing Checklist
 
-- [ ] Set Preset captures correct crop values from a cropped image
-- [ ] Set Preset captures correct width/height from a resized image
-- [ ] Set Preset captures correct left/top from a repositioned image
-- [ ] Set Preset works when the image is inside a content placeholder
-- [ ] Set Preset shows error when a text placeholder is selected
+- [ ] Save Preset captures correct crop values from a cropped image
+- [ ] Save Preset captures correct width/height from a resized image
+- [ ] Save Preset captures correct left/top from a repositioned image
+- [ ] Save Preset works when the image is inside a content placeholder
+- [ ] Save Preset shows error when a text placeholder is selected
 - [ ] Apply with all checkboxes ON restores all three properties with correct width
 - [ ] Apply with only "Size" checked changes only size, not crop or position
 - [ ] Apply to Slides processes all pictures on 3 selected slides
 - [ ] Apply to Slides skips text boxes and other non-picture shapes
 - [ ] Presets survive closing and reopening PowerPoint (persistence check)
 - [ ] Error shown when clicking Apply with no selection
-- [ ] Error shown when clicking Set Preset on a non-picture shape
+- [ ] Error shown when clicking Save Preset on a non-picture shape
 - [ ] Bulk Insert inserts one slide per selected image file
 - [ ] Bulk Insert titles each slide with the filename (no extension) when Add Title is checked
 - [ ] Bulk Insert image is aspect-ratio-correct and centered on the slide

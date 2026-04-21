@@ -31,7 +31,7 @@ namespace PicWrangler.Ribbon
             rtb.AppendText($"Version {version.Major}.{version.Minor}.{version.Build}\n\n");
             AppendBold(rtb, "PRESETS\n");
             rtb.AppendText(
-                "1. Select an image and click \"Set Preset\" to capture its crop, size, and position.\n" +
+                "1. Select an image and click \"Save Preset\" to capture its crop, size, and position.\n" +
                 "2. Check Crop / Size / Position to choose what gets applied.\n" +
                 "3. Click \"Apply\" to apply the preset to the selected image.\n" +
                 "4. Select slides in the slide panel and click \"Apply to Slides\" to batch-apply.\n" +

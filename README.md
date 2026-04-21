@@ -44,7 +44,7 @@ A PowerPoint COM Add-In (VSTO) that lets you save image crop, size, and position
 
 1. Select an image in PowerPoint
 2. Choose a preset slot from the dropdown (Preset 1–4)
-3. Click **Set Preset**
+3. Click **Save Preset**
 
 ### Applying a Preset
 
