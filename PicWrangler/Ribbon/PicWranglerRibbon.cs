@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -25,6 +26,9 @@ namespace PicWrangler.Ribbon
         private bool _applyCrop     = true;
         private bool _applySize     = true;
         private bool _applyPosition = true;
+
+        private bool _addTitle = true;
+        private bool _addNotes = false;
 
         // -----------------------------------------------------------------
         // IRibbonExtensibility
@@ -64,16 +68,14 @@ namespace PicWrangler.Ribbon
         public bool chkCrop_GetPressed(IRibbonControl control)         => _applyCrop;
         public bool chkSize_GetPressed(IRibbonControl control)         => _applySize;
         public bool chkPosition_GetPressed(IRibbonControl control)     => _applyPosition;
-        public bool chkApplyPreset_GetPressed(IRibbonControl control)  => false;
-        public bool chkAddTitle_GetPressed(IRibbonControl control)     => false;
-        public bool chkAddNotes_GetPressed(IRibbonControl control)     => false;
+        public bool chkAddTitle_GetPressed(IRibbonControl control) => _addTitle;
+        public bool chkAddNotes_GetPressed(IRibbonControl control) => _addNotes;
 
         public void chkCrop_Toggle(IRibbonControl control, bool pressed)     => _applyCrop     = pressed;
         public void chkSize_Toggle(IRibbonControl control, bool pressed)     => _applySize     = pressed;
         public void chkPosition_Toggle(IRibbonControl control, bool pressed) => _applyPosition = pressed;
-        public void chkApplyPreset_Toggle(IRibbonControl control, bool pressed) { }
-        public void chkAddTitle_Toggle(IRibbonControl control, bool pressed)    { }
-        public void chkAddNotes_Toggle(IRibbonControl control, bool pressed)    { }
+        public void chkAddTitle_Toggle(IRibbonControl control, bool pressed) => _addTitle = pressed;
+        public void chkAddNotes_Toggle(IRibbonControl control, bool pressed) => _addNotes = pressed;
 
         // -----------------------------------------------------------------
         // Set Preset
@@ -167,8 +169,73 @@ namespace PicWrangler.Ribbon
 
         public void btnBulkInsert_Click(IRibbonControl control)
         {
-            MessageBox.Show("Bulk Insert coming soon.", "PicWrangler",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var app          = Globals.ThisAddIn.Application;
+            var presentation = app.ActivePresentation;
+
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Title     = "Select Images to Insert";
+                dialog.Filter    = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.tiff;*.tif|All Files|*.*";
+                dialog.Multiselect = true;
+
+                if (dialog.ShowDialog() != DialogResult.OK || dialog.FileNames.Length == 0)
+                    return;
+
+                float slideWidth  = presentation.PageSetup.SlideWidth;
+                float slideHeight = presentation.PageSetup.SlideHeight;
+
+                foreach (string filePath in dialog.FileNames)
+                {
+                    var layout = _addTitle
+                        ? PPT.PpSlideLayout.ppLayoutTitleOnly
+                        : PPT.PpSlideLayout.ppLayoutBlank;
+
+                    var slide = presentation.Slides.Add(presentation.Slides.Count + 1, layout);
+
+                    float imgAreaTop    = 0f;
+                    float imgAreaHeight = slideHeight;
+
+                    if (_addTitle)
+                    {
+                        var titleShape = slide.Shapes.Title;
+                        titleShape.TextFrame.TextRange.Text = Path.GetFileNameWithoutExtension(filePath);
+                        imgAreaTop    = titleShape.Top + titleShape.Height;
+                        imgAreaHeight = slideHeight - imgAreaTop;
+                    }
+
+                    float aspectRatio;
+                    using (var bmp = System.Drawing.Image.FromFile(filePath))
+                        aspectRatio = (float)bmp.Width / bmp.Height;
+
+                    float finalWidth, finalHeight;
+                    if (slideWidth / imgAreaHeight > aspectRatio)
+                    {
+                        finalHeight = imgAreaHeight;
+                        finalWidth  = finalHeight * aspectRatio;
+                    }
+                    else
+                    {
+                        finalWidth  = slideWidth;
+                        finalHeight = finalWidth / aspectRatio;
+                    }
+
+                    float imgLeft = (slideWidth - finalWidth)    / 2f;
+                    float imgTop  = imgAreaTop + (imgAreaHeight - finalHeight) / 2f;
+
+                    slide.Shapes.AddPicture(filePath,
+                        MsoTriState.msoFalse, MsoTriState.msoCTrue,
+                        imgLeft, imgTop, finalWidth, finalHeight);
+
+                    if (_addNotes)
+                        slide.NotesPage.Shapes[2].TextFrame.TextRange.Text =
+                            $"Original path: {filePath}";
+                }
+
+                int count = dialog.FileNames.Length;
+                MessageBox.Show(
+                    $"Inserted {count} image{(count != 1 ? "s" : "")} into the presentation.",
+                    "PicWrangler", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         // -----------------------------------------------------------------

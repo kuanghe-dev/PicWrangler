@@ -40,17 +40,14 @@
 
           <separator id="sep2" />
 
-          <!-- Bulk Insert (stub) -->
+          <!-- Bulk Insert -->
           <button id="btnBulkInsert" label="Bulk Insert" size="large"
                   imageMso="OmsSlideInsert"
                   onAction="btnBulkInsert_Click" />
-          <checkBox id="chkApplyPreset" label="Apply Preset" enabled="false"
-                    getPressed="chkApplyPreset_GetPressed"
-                    onAction="chkApplyPreset_Toggle" />
-          <checkBox id="chkAddTitle"    label="Add Title"    enabled="false"
+          <checkBox id="chkAddTitle" label="Add Title"
                     getPressed="chkAddTitle_GetPressed"
                     onAction="chkAddTitle_Toggle" />
-          <checkBox id="chkAddNotes"    label="Add Notes"    enabled="false"
+          <checkBox id="chkAddNotes" label="Add Notes"
                     getPressed="chkAddNotes_GetPressed"
                     onAction="chkAddNotes_Toggle" />
 
