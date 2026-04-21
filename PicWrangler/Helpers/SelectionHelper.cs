@@ -1,4 +1,5 @@
 using System.Windows.Forms;
+using Microsoft.Office.Core;
 using PPT = Microsoft.Office.Interop.PowerPoint;
 
 namespace PicWrangler.Helpers
@@ -18,7 +19,20 @@ namespace PicWrangler.Helpers
 
             PPT.Shape shape = selection.ShapeRange[1];
 
-            if (shape.Type != Microsoft.Office.Core.MsoShapeType.msoPicture)
+            if (shape.Type != MsoShapeType.msoPicture &&
+                shape.Type != MsoShapeType.msoLinkedPicture &&
+                shape.Type != MsoShapeType.msoPlaceholder)
+            {
+                MessageBox.Show("Selected object is not a picture.", "PicWrangler",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return null;
+            }
+
+            try
+            {
+                _ = shape.PictureFormat.CropLeft;
+            }
+            catch
             {
                 MessageBox.Show("Selected object is not a picture.", "PicWrangler",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);

@@ -8,6 +8,16 @@ namespace PicWrangler.Services
     {
         public void Apply(PPT.Shape shape, Preset preset, bool applyCrop, bool applySize, bool applyPosition)
         {
+            // Crop first — setting crop values changes the frame dimensions,
+            // so size must be applied after to guarantee the correct final width/height.
+            if (applyCrop && preset.Crop != null)
+            {
+                shape.PictureFormat.CropLeft   = preset.Crop.CropLeft;
+                shape.PictureFormat.CropRight  = preset.Crop.CropRight;
+                shape.PictureFormat.CropTop    = preset.Crop.CropTop;
+                shape.PictureFormat.CropBottom = preset.Crop.CropBottom;
+            }
+
             if (applySize && preset.Size != null)
             {
                 shape.LockAspectRatio = MsoTriState.msoFalse;
@@ -19,15 +29,6 @@ namespace PicWrangler.Services
             {
                 shape.Left = preset.Position.Left;
                 shape.Top  = preset.Position.Top;
-            }
-
-            // Apply crop last — resizing can shift the visible crop region
-            if (applyCrop && preset.Crop != null)
-            {
-                shape.PictureFormat.CropLeft   = preset.Crop.CropLeft;
-                shape.PictureFormat.CropRight  = preset.Crop.CropRight;
-                shape.PictureFormat.CropTop    = preset.Crop.CropTop;
-                shape.PictureFormat.CropBottom = preset.Crop.CropBottom;
             }
         }
     }

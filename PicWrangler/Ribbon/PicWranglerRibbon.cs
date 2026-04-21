@@ -148,7 +148,9 @@ namespace PicWrangler.Ribbon
             {
                 foreach (PPT.Shape shape in slide.Shapes)
                 {
-                    if (shape.Type != MsoShapeType.msoPicture) continue;
+                    if (shape.Type != MsoShapeType.msoPicture &&
+                        shape.Type != MsoShapeType.msoLinkedPicture &&
+                        shape.Type != MsoShapeType.msoPlaceholder) continue;
                     _applicator.Apply(shape, preset, _applyCrop, _applySize, _applyPosition);
                     imageCount++;
                 }
