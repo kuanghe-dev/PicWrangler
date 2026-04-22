@@ -36,6 +36,15 @@ A PowerPoint COM Add-In (VSTO) that lets you save image crop, size, and position
 2. Unzip and run **`setup.exe`**
 3. Open PowerPoint — the **ADD-INS** tab will contain the **PicWrangler: Batch Manipulate Pictures** group
 
+### Security warning during installation
+
+Because the installer is signed with a self-signed certificate, Windows may show a security warning. To resolve it, trust the certificate once before running `setup.exe`:
+
+1. Right-click `setup.exe` → **Properties** → **Digital Signatures** tab
+2. Select the signature → **Details** → **View Certificate** → **Install Certificate**
+3. Choose **Local Machine** → **Place all certificates in the following store** → **Trusted Publishers**
+4. Click **Finish**, then run `setup.exe` again
+
 ---
 
 ## Usage
